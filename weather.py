@@ -80,7 +80,7 @@ def load_data_from_csv(csv_file):
             low = int(row[1])
             high = int(row[2])
 
-            new_data_list.append([date, low, high])   # <-- LIST, NOT TUPLE
+            new_data_list.append([date, low, high])
 
     return new_data_list
 
@@ -147,6 +147,7 @@ def find_max(weather_data):
 
 
 def generate_summary(weather_data):   
+
     if not weather_data:
         return ""
 
@@ -183,19 +184,19 @@ def generate_summary(weather_data):
     avg_low_f = total_low / len(weather_data)
     avg_high_f = total_high / len(weather_data)
 
-    # Convert everything to required format
+    # Convert everything to required format before building the summary
     min_temp = format_temperature(convert_f_to_c(min_temp_f))
     max_temp = format_temperature(convert_f_to_c(max_temp_f))
     avg_low = format_temperature(convert_f_to_c(avg_low_f))
     avg_high = format_temperature(convert_f_to_c(avg_high_f))
-    min_date_fmt = convert_date(min_date)
-    max_date_fmt = convert_date(max_date)
+    min_date_format = convert_date(min_date)
+    max_date_format = convert_date(max_date)
 
     # Build summary
     summary = (
         f"{len(weather_data)} Day Overview\n"
-        f"  The lowest temperature will be {min_temp}, and will occur on {min_date_fmt}.\n"
-        f"  The highest temperature will be {max_temp}, and will occur on {max_date_fmt}.\n"
+        f"  The lowest temperature will be {min_temp}, and will occur on {min_date_format}.\n"
+        f"  The highest temperature will be {max_temp}, and will occur on {max_date_format}.\n"
         f"  The average low this week is {avg_low}.\n"
         f"  The average high this week is {avg_high}.\n"
     )
@@ -213,23 +214,19 @@ def generate_summary(weather_data):
 
 
 def generate_daily_summary(weather_data):
-    # If the input list is empty, we return an empty string
+
     if not weather_data:
         return ""
 
-    # This will store each day's formatted summary
-    daily_summary_list = []
+    # Storing each day's formatted summary
+    daily_summary = []
 
     # Loop through each day's data
     # Each row contains: date, low temperature, high temperature
-    for date_raw, low_temp_f, high_temp_f in weather_data:
+    for date, low_temp_f, high_temp_f in weather_data:
 
-        # Convert the raw ISO date into a readable format
-        # Example: "2021-07-02T07:00:00+08:00" -> "Friday 02 July 2021"
-        date_formatted = convert_date(date_raw)
-
-        # Convert Fahrenheit temperatures to Celsius
-        # Using separate variable names so we don't overwrite Python's min/max functions
+        # Convert ISO date into a readable format and Fahrenheit temperatures to Celsius
+        date_formatted = convert_date(date)
         low_temp_c = convert_f_to_c(low_temp_f)
         high_temp_c = convert_f_to_c(high_temp_f)
 
@@ -237,19 +234,18 @@ def generate_daily_summary(weather_data):
         low_temp_str = format_temperature(low_temp_c)
         high_temp_str = format_temperature(high_temp_c)
 
-        # Create the daily summary string for this day
-        daily_template = (
+        # Create daily summary string for this day
+        template = (
             f"---- {date_formatted} ----\n"
             f"  Minimum Temperature: {low_temp_str}\n"
             f"  Maximum Temperature: {high_temp_str}\n"
         )
 
         # Add this day's summary to the list of all summaries
-        daily_summary_list.append(daily_template)
+        daily_summary.append(template)
 
-    # Join all daily summaries into a single string
-    # The "\n" ensures each day's summary is separated by a blank line
-    full_daily_summary = "\n".join(daily_summary_list) + "\n"
+    # Combine all daily summaries into a single string
+    full_daily_summary = "\n".join(daily_summary) + "\n"
 
     return full_daily_summary
 
