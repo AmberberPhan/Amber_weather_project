@@ -64,16 +64,12 @@ def load_data_from_csv(csv_file):
 
     with open(csv_file) as my_file:
         my_file_reader = csv.reader(my_file)
-
-        next(my_file_reader)  # skip header
+        # skip header
+        next(my_file_reader)
 
         for row in my_file_reader:
             # Skip empty rows
             if not row:
-                continue
-
-            # Skip rows where any field is empty
-            if row[0] == "" or row[1] == "" or row[2] == "":
                 continue
 
             date = row[0]
@@ -95,7 +91,7 @@ def load_data_from_csv(csv_file):
 
 
 def find_min(weather_data):
-    # Handle empty list
+
     if not weather_data:
         return ()
 
